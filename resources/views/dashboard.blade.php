@@ -136,6 +136,9 @@
                         Tags
                     </th>
                     <th scope="col" class="px-6 py-3">
+                        Pricing
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Status
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -159,6 +162,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 <span class=" {{ $product['tags'] === 'men' ? 'bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300' : 'bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300' }}">{{$product['tags']}}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                ${{$product['variants'][0]['price']}}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
