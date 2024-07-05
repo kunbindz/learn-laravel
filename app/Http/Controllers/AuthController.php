@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         $client = new Client(['allow_redirects' => true]);
         $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
-            'X-Shopify-Access-Token' => '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'
+            'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
         ]);
         $response = $client->send($request);
         $content = $response->getBody()->getContents();
