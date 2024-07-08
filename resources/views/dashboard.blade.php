@@ -9,30 +9,11 @@
 
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pt-2 pb-2 bg-white dark:bg-gray-900">
             <div>
-
                 <a href={{route('products.create')}}>
                     <button  class="inline-flex items-center text-white bg-blue-500 font-medium rounded-lg text-sm px-3 py-1.5" type="button">
                         Create product
                     </button>
                 </a>
-
-                <!-- Dropdown menu -->
-                <div id="dropdownAction" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
-                        <li>
-                            <a  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reward</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Promote</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Activate account</a>
-                        </li>
-                    </ul>
-                    <div class="py-1">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete User</a>
-                    </div>
-                </div>
             </div>
             <label for="table-search" class="sr-only">Search</label>
             <div class="relative">

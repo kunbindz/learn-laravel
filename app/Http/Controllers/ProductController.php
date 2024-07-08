@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -43,39 +44,37 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(Request $request)
     {
         $data = $request->all();
 
-//        $product = [
-//            "products"  =>  array(
-//                "first_name"        => $data->first_name,
-//                "last_name"         => $user->last_name,
-//                "email"             => $user->email,
-//                "phone"             => empty($user->phone) ? '' : $user->phone,
-//                "verified_email"    => true,
-//                "accepts_marketing" => true,
-//                "tag"              => $data->tag,
-//                "addresses" => array(
-//                    array(
-//                        "address1"   => empty($user->address) ? 'null' : $user->address,
-//                        "city"       => empty($user->city) ? 'null' : $user->city,
-//                        "zip"        => empty($user->zipcode) ? '' : $user->zipcode,
-//                        "country"    => empty($user->country) ? '' : $user->country
-//                    )
-//                )
-//            )
-//        ];
+        $product = [
+            "product" => [
+                "title"        => $data['title'] ?? null,
+                "vendor"       => $data['vendor'] ?? null,
+                "product_type" => $data['product_type'] ?? null,
+                "status"       => $data['status'] ?? null,
+                "image"        => isset($data['image']) ? ['src' => $data['image']] : ['src' => 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'],
+            ]
+        ];
+
         $client = new Client(['allow_redirects' => true]);
-        $request = new \GuzzleHttp\Psr7\Request('POST', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json", [
+        $shopifyRequest = new \GuzzleHttp\Psr7\Request('POST', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json", [
             'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
             'Content-Type' => 'application/json'
         ], json_encode(
             $product
         ));
-        echo"success create user";
+        try {
+            $client->send($shopifyRequest);
+            return redirect('/products')->with('success', 'Product created successfully');
+        } catch (GuzzleException $e) {
+
+        }
+
+
     }
 
     /**
