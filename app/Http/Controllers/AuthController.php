@@ -56,6 +56,8 @@ class AuthController extends Controller
         if($user) {
             if(Hash::check($request->password, $user->password)) {
                 $request->session()->put('loginId', $user->id);
+                $user = User::where('id', $user->id)->first();
+                $request->session()->put('user', $user);
                 return redirect('products');
             } else {
                 return back()->with('fail', 'The password not matches.');

@@ -4,7 +4,7 @@
     @extends('header')
 
     <div class="mx-auto max-w-7xl p-6 lg:px-8">
-         <h1>hi <strong>{{$data->name}}</strong>, welcome to Dashboard !</h1>
+         <h1>hi <strong>{{session('user')->name}}</strong>, welcome to Dashboard !</h1>
         {{-- Table--}}
 
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pt-2 pb-2 bg-white dark:bg-gray-900">

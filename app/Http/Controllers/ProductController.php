@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
@@ -16,20 +17,15 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $data = array();
-        if(Session::has('loginId')) {
-            $data = User::where('id', Session::get('loginId'))->first();
-        }
-
         $client = new Client(['allow_redirects' => true]);
         $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
-            'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
+            'X-Shopify-Access-Token' => config('myconfig.access_token'),
         ]);
         $response = $client->send($request);
         $content = $response->getBody()->getContents();
         $shopifyData = json_decode($content, true);
 
-        return view('dashboard', compact('data', 'shopifyData'));
+        return view('dashboard', compact('shopifyData'));
     }
 
     /**
@@ -53,9 +49,9 @@ class ProductController extends Controller
     {
         $data = $request->all();
 
-        $product = [
+//        $product = [
 //            "products"  =>  array(
-//                "first_name"        => $user->first_name,
+//                "first_name"        => $data->first_name,
 //                "last_name"         => $user->last_name,
 //                "email"             => $user->email,
 //                "phone"             => empty($user->phone) ? '' : $user->phone,
@@ -71,7 +67,7 @@ class ProductController extends Controller
 //                    )
 //                )
 //            )
-        ];
+//        ];
         $client = new Client(['allow_redirects' => true]);
         $request = new \GuzzleHttp\Psr7\Request('POST', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json", [
             'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
