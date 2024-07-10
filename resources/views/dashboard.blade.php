@@ -61,7 +61,7 @@
                         @foreach($shopifyData['products'] as $product)
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
                                 <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img class="w-10 h-10 rounded-full" src="{{$product['image']['src']}}" alt="Jese image">
+                                    <img class="w-10 h-10 rounded-full" src="{{$product['image']['src'] ?? 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'}}" alt="Jese image">
                                     <div class="ps-3">
                                         <div class="text-base font-semibold">{{$product['title']}}</div>
                                         <div class="font-normal text-gray-500"> ID: {{$product['id']}}</div>
@@ -90,9 +90,19 @@
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4">
-                                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit </a>
-                                    <a href="#" class="font-medium text-red-600 dark:text-blue-500 ml-3 hover:underline">Delete</a>
+                                <td class="px-6 py-4 flex gap-3">
+
+                                    <form action="{{ route('products.edit', ['product' => $product['id']]) }}" method="POST" style=" margin-bottom: 0" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                        @csrf
+                                        @method('EDIT')
+                                        <button type="submit" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
+                                    </form>
+
+                                    <form action="{{ route('products.destroy', ['product' => $product['id']]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

@@ -55,6 +55,7 @@ class ProductController extends Controller
                 "title"        => $data['title'] ?? null,
                 "vendor"       => $data['vendor'] ?? null,
                 "product_type" => $data['product_type'] ?? null,
+                "tags"         => $data['tags'] ?? null,
                 "status"       => $data['status'] ?? null,
                 "image"        => isset($data['image']) ? ['src' => $data['image']] : ['src' => 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'],
             ]
@@ -97,6 +98,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+
     }
 
     /**
@@ -115,10 +117,31 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id)
     {
-        //
+        $client = new Client(['allow_redirects' => true]);
+
+        // Prepare the DELETE request
+        $removeProductRequest = new \GuzzleHttp\Psr7\Request(
+            'DELETE',
+            "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products/{$id}.json",
+            [
+                'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
+            ]
+        );
+
+        try {
+            // Send the request
+            $client->send($removeProductRequest);
+
+            // Redirect with success message
+            return redirect('/products')->with('success', 'Product deleted successfully');
+        } catch (GuzzleException $e) {
+            // Handle the exception
+            return redirect('/products')->with('error', 'Failed to delete the product');
+        }
+
     }
 }
