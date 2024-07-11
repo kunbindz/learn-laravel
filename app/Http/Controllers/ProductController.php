@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -18,15 +19,16 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $client = new Client(['allow_redirects' => true]);
-        $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
-            'X-Shopify-Access-Token' => config('myconfig.access_token'),
-        ]);
-        $response = $client->send($request);
-        $content = $response->getBody()->getContents();
-        $shopifyData = json_decode($content, true);
+//        $client = new Client(['allow_redirects' => true]);
+//        $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
+//            'X-Shopify-Access-Token' => config('myconfig.access_token'),
+//        ]);
+//        $response = $client->send($request);
+//        $content = $response->getBody()->getContents();
+//        $shopifyData = json_decode($content, true);
 
-        return view('dashboard', compact('shopifyData'));
+        $products = Product::all();
+        return view('dashboard', compact('products'));
     }
 
     /**
