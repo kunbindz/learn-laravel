@@ -37,14 +37,13 @@ class GetProductShopify extends Command
         $content = $response->getBody()->getContents();
         $products = json_decode($content, true);
 
-
         foreach ($products['products'] as $product) {
             DB::table('products')->insert([
                 "id" => $product['id'],
                 'title' => $product['title'],
                 'vendor' => $product['vendor'],
                 'product_type' => $product['product_type'],
-
+                'price' => $product['variants'][0]['price'],
                 'tags' =>  $product['tags'],
                 'status' => $product['status'],
                 'image' => isset($product['image']['src']) ? $product['image']['src'] : 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg',

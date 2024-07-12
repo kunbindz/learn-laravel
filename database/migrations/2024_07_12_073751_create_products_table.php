@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('title');
             $table->string('vendor');
             $table->string('product_type');
+            $table->decimal('price', 8, 2);
             $table->string('tags');
             $table->string('status');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

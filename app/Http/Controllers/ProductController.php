@@ -50,34 +50,31 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'vendor' => 'required|string|max:255',
+            'product_type' => 'required|string|max:255',
+            'price' => 'required|string',
+            'tags' => 'nullable|string',
+            'status' => 'required|string',
+            'image' => 'nullable|url',
+        ]);
 
-        $product = [
-            "product" => [
-                "title"        => $data['title'] ?? null,
-                "vendor"       => $data['vendor'] ?? null,
-                "product_type" => $data['product_type'] ?? null,
-                "tags"         => $data['tags'] ?? null,
-                "status"       => $data['status'] ?? null,
-                "image"        => isset($data['image']) ? ['src' => $data['image']] : ['src' => 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'],
-            ]
+        $productData = [
+            "title"        => $validated['title'],
+            "vendor"       => $validated['vendor'],
+            "product_type" => $validated['product_type'],
+            "price"        => $validated['price'],
+            "tags"         => $validated['tags'] ?? null,
+            "status"       => $validated['status'],
+            "image"        => isset($validated['image']) ? ['src' => $validated['image']] : ['src' => 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'],
         ];
 
-        $client = new Client(['allow_redirects' => true]);
-        $shopifyRequest = new \GuzzleHttp\Psr7\Request('POST', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json", [
-            'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
-            'Content-Type' => 'application/json'
-        ], json_encode(
-            $product
-        ));
-        try {
-            $client->send($shopifyRequest);
-            return redirect('/products')->with('success', 'Product created successfully');
-        } catch (GuzzleException $e) {
+        // Create the product
+        $product = Product::create($productData);
 
-        }
-
-
+        // Redirect with a success message
+        return redirect('/products')->with('success', 'Product created successfully');
     }
 
     /**
