@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\User;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -17,18 +16,23 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-//        $client = new Client(['allow_redirects' => true]);
-//        $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
-//            'X-Shopify-Access-Token' => config('myconfig.access_token'),
-//        ]);
-//        $response = $client->send($request);
-//        $content = $response->getBody()->getContents();
-//        $shopifyData = json_decode($content, true);
+        $query = $request->input('query');
+        if ($query) {
+            // Search the products table based on the query
+            $products = Product::where('title', 'LIKE', "%$query%")
+                ->orWhere('vendor', 'LIKE', "%$query%")
+                ->orWhere('product_type', 'LIKE', "%$query%")
+                ->orWhere('id', 'LIKE', "%$query%")
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // If no search query, get all products
+            $products = Product::orderBy('created_at', 'desc')->get();
+        }
 
-        $products = Product::all();
-        return view('dashboard', compact('products'));
+        return view('dashboard', compact('products', 'query'));
     }
 
     /**
@@ -50,6 +54,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'vendor' => 'required|string|max:255',
@@ -60,21 +65,40 @@ class ProductController extends Controller
             'image' => 'nullable|url',
         ]);
 
+        $defaultImage = 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg';
+
         $productData = [
             "title"        => $validated['title'],
             "vendor"       => $validated['vendor'],
             "product_type" => $validated['product_type'],
-            "price"        => $validated['price'],
-            "tags"         => $validated['tags'] ?? null,
+            "price"        => (string)$validated['price'],
+            "tags"         => $validated['tags'],
             "status"       => $validated['status'],
-            "image"        => isset($validated['image']) ? ['src' => $validated['image']] : ['src' => 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg'],
+            "image"        => isset($validated['image']) ? $validated['image'] : $defaultImage
         ];
 
-        // Create the product
-        $product = Product::create($productData);
 
-        // Redirect with a success message
-        return redirect('/products')->with('success', 'Product created successfully');
+        try {
+            $product = new Product();
+            $product->title = $productData['title'];
+            $product->vendor = $productData['vendor'];
+            $product->product_type = $productData['product_type'];
+            $product->price = $productData['price'];
+            $product->tags = $productData['tags'];
+            $product->status = $productData['status'];
+            $product->image = $productData['image'];
+
+            // Save the product to the database
+            $product->save();
+
+            // Redirect with a success message
+            return redirect('/products')->with('success', 'Product created successfully');
+        } catch (GuzzleException $e) {
+            return $e;
+        }
+
+
+
     }
 
     /**
@@ -94,10 +118,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
-        //
-
+        $product = Product::findOrFail($id);
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -105,11 +129,14 @@ class ProductController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->update($request->all());
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
 
     /**
@@ -120,27 +147,14 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $client = new Client(['allow_redirects' => true]);
+        $deleted = Product::destroy($id);
 
-        // Prepare the DELETE request
-        $removeProductRequest = new \GuzzleHttp\Psr7\Request(
-            'DELETE',
-            "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products/{$id}.json",
-            [
-                'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
-            ]
-        );
-
-        try {
-            // Send the request
-            $client->send($removeProductRequest);
-
-            // Redirect with success message
+        if ($deleted) {
             return redirect('/products')->with('success', 'Product deleted successfully');
-        } catch (GuzzleException $e) {
-            // Handle the exception
-            return redirect('/products')->with('error', 'Failed to delete the product');
+        } else {
+            return response()->json(['message' => 'Product not found'], 404);
         }
+
 
     }
 }

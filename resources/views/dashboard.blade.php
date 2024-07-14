@@ -4,7 +4,8 @@
     @extends('header')
 
     <div class="mx-auto max-w-7xl p-6 lg:px-8">
-         <h1>hi <strong>{{session('user')->name}}</strong>, welcome to Dashboard !</h1>
+         <h1>hi <strong>{{session('user')->name}}</strong>, welcome to Products list !</h1>
+
         {{-- Table--}}
 
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pt-2 pb-2 bg-white dark:bg-gray-900">
@@ -15,15 +16,17 @@
                     </button>
                 </a>
             </div>
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
+            <form action="{{ route('products.index') }}" method="GET">
+                <label for="table-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <button type="submit" class="absolute inset-y-0 start-0 flex items-center ps-3 ">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                    </button>
+                    <input type="text" name="query" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for products" value="{{ request('query') }}">
                 </div>
-                <input type="text" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users">
-            </div>
+            </form>
         </div>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
@@ -92,11 +95,9 @@
 
                                 <td class="px-6 py-4 flex gap-3">
 
-                                    <form action="{{ route('products.edit', ['product' => $product->id]) }}" method="POST" style=" margin-bottom: 0" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                        @csrf
-                                        @method('EDIT')
-                                        <button type="submit" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
-                                    </form>
+                                    <a href="{{ route('products.edit', ['product' => $product->id]) }}">
+                                        <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
+                                    </a>
 
                                     <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                         @csrf
