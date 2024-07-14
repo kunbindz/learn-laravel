@@ -11,12 +11,17 @@
                     @csrf
                     @method('PUT')
                     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+{{--                        <div class="sm:col-span-2">--}}
+{{--                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>--}}
+{{--                            <input type="file"--}}
+{{--                                   name="image"--}}
+{{--                                   class="w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded" />--}}
+{{--                            <p class="text-xs text-gray-400 mt-2">PNG, JPG SVG and WEBP are Allowed.</p>--}}
+{{--                        </div>--}}
+
                         <div class="sm:col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>
-                            <input type="file"
-                                   name="image"
-                                   class="w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded" />
-                            <p class="text-xs text-gray-400 mt-2">PNG, JPG SVG and WEBP are Allowed.</p>
+                            <input type="text" name="image" id="image" value="{{ $product->image }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product image" required="">
                         </div>
 
                         <div class="sm:col-span-2">
