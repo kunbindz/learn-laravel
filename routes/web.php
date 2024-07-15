@@ -26,12 +26,6 @@ Route::post('/login-user', [AuthController::class, 'loginUser'])->name('login-us
 Route::resource('/products', ProductController::class)->middleware('is_logged_in');
 
 
-//Route::resource(['prefix' => 'products', 'middleware' => ['isLoggedIn']], function () {
-//    Route::resource('/', [ProductController::class, 'index']);
-//    Route::get('/', [ProductController::class , 'index'])->middleware('isLoggedIn')->name('products.index');
-//    Route::get('/create', [ProductController::class , 'create'])->middleware('isLoggedIn')->name('products.create');
-//    Route::post('/posts', [ProductController::class , 'store'])->middleware('isLoggedIn')->name('products.store');
-//});
 
 
 

@@ -26,10 +26,10 @@ class ProductController extends Controller
                 ->orWhere('product_type', 'LIKE', "%$query%")
                 ->orWhere('id', 'LIKE', "%$query%")
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate(10);
         } else {
             // If no search query, get all products
-            $products = Product::orderBy('created_at', 'desc')->get();
+            $products = Product::orderBy('created_at', 'desc')->paginate(10);
         }
 
         return view('dashboard', compact('products', 'query'));

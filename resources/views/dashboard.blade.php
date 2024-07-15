@@ -30,8 +30,7 @@
         </div>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-
-            <div class="h-[75vh] ">
+            <div class="h-[77vh] ">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 w-full" style="position: sticky; top: 0">
                     <tr>
@@ -93,17 +92,18 @@
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 flex gap-3">
+                                <td class="px-6 py-4">
+                                    <div class="flex gap-3 h-[30px]">
+                                        <a href="{{ route('products.edit', ['product' => $product->id]) }}">
+                                            <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2.5 py-2 text-center">Edit</button>
+                                        </a>
 
-                                    <a href="{{ route('products.edit', ['product' => $product->id]) }}">
-                                        <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
-                                    </a>
-
-                                    <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Delete</button>
-                                    </form>
+                                        <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-2.5 py-2 text-center">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -115,6 +115,9 @@
 
                     </tbody>
                 </table>
+                <div style="position: sticky; bottom: 0" class="px-6 py-2 bg-gray-50">
+                    {{ $products->links() }}
+                </div>
             </div>
 
         </div>

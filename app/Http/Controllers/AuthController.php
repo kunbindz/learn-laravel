@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UserRequestequest as UserRequestequestAlias;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -20,24 +22,20 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function registerUser(Request $request)
+    public function registerUser(UserRequest  $request)
     {
-        $request->validate([
-            'name'=>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required|min:5|max:20',
-            'confirmPassword'=>'required|same:password'
-        ]);
+
+        $validated = $request->validated();
 
         $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = Hash::make($validated['password']);
 
         $res = $user->save();
 
         if($res) {
-            return redirect('/login')->with('success', 'You have registered successfully !');
+            return redirect('/login')->with('registeredSuccess', 'You have registered successfully, login now !');
         } else {
             return back()->with('fail', 'Something wrong !');
         }
@@ -65,27 +63,6 @@ class AuthController extends Controller
         } else {
             return back()->with('fail', 'This email not registered.');
         }
-    }
-
-    public function dashboard()
-    {
-        $data = array();
-        if(Session::has('loginId')) {
-            $data = User::where('id', Session::get('loginId'))->first();
-        }
-
-        $client = new Client(['allow_redirects' => true]);
-        $request = new \GuzzleHttp\Psr7\Request('GET', "https://tuan-store-uppromote.myshopify.com/admin/api/2024-07/products.json?vendor=partners-demo", [
-            'X-Shopify-Access-Token' => env('SHOPIFY_ACCESS_TOKEN'),
-        ]);
-        $response = $client->send($request);
-        $content = $response->getBody()->getContents();
-        $shopifyData = json_decode($content, true);
-        return view('dashboard', compact('data', 'shopifyData'));
-    }
-
-    public function deleteProduct(Request $request) {
-
     }
 
     public function logout()

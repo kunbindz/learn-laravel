@@ -9,9 +9,9 @@
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form class="space-y-6" action="{{route('login-user')}}" method="POST">
-            @if(\Illuminate\Support\Facades\Session::has('success'))
+            @if(\Illuminate\Support\Facades\Session::has('registeredSuccess'))
                 <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                    <span class="font-medium">Success!</span> {{\Illuminate\Support\Facades\Session::get('success')}}
+                    <span class="font-medium">Success!</span> {{\Illuminate\Support\Facades\Session::get('registeredSuccess')}}
                 </div>
             @endif
 
