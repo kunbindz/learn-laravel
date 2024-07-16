@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -62,34 +63,19 @@ class ProductController extends Controller
             'price' => 'required|string',
             'tags' => 'nullable|string',
             'status' => 'required|string',
-            'image' => 'nullable|url',
+            'image' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
 
         $defaultImage = 'https://img.freepik.com/premium-photo/man-with-gray-face-black-circle-with-white-background_745528-3178.jpg';
 
-        $productData = [
-            "title"        => $validated['title'],
-            "vendor"       => $validated['vendor'],
-            "product_type" => $validated['product_type'],
-            "price"        => (string)$validated['price'],
-            "tags"         => $validated['tags'],
-            "status"       => $validated['status'],
-            "image"        => isset($validated['image']) ? $validated['image'] : $defaultImage
-        ];
-
-
         try {
-            $product = new Product();
-            $product->title = $productData['title'];
-            $product->vendor = $productData['vendor'];
-            $product->product_type = $productData['product_type'];
-            $product->price = $productData['price'];
-            $product->tags = $productData['tags'];
-            $product->status = $productData['status'];
-            $product->image = $productData['image'];
-
-            // Save the product to the database
-            $product->save();
+            $productData = $request->all();
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filePath = $file->store('uploads', 'public');
+                $productData['image'] = $filePath;
+            }
+            $product = Product::create($productData);
 
             // Redirect with a success message
             return redirect('/products')->with('success', 'Product created successfully');
@@ -121,6 +107,7 @@ class ProductController extends Controller
     public function edit($id): View
     {
         $product = Product::findOrFail($id);
+
         return view('products.edit', compact('product'));
     }
 
@@ -133,10 +120,42 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
-        $product = Product::findOrFail($id);
-        $product->update($request->all());
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully');
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'vendor' => 'required|string|max:255',
+            'product_type' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'tags' => 'nullable|string',
+            'status' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        try {
+            $product = Product::findOrFail($id);
+            $productData = $request->only(['title', 'vendor', 'product_type', 'price', 'tags', 'status']);
+
+            // Handle file upload
+            if ($request->hasFile('image')) {
+                // Delete the old image if it exists
+                if ($product->image) {
+                    Storage::delete('public/' . $product->image);
+                }
+                $filePath = $request->file('image')->store('uploads', 'public');
+                $productData['image'] = $filePath;
+            }
+
+            // Update the product in the database
+            $product->update($productData);
+
+            return redirect()->route('products.index')->with('success', 'Product updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('products.index')->with('fail', 'Something wrong');
+        }
+
+
+
+
     }
 
     /**

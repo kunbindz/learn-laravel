@@ -10,19 +10,26 @@
                 <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data" >
                     @csrf
                     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-{{--                        <div class="sm:col-span-2">--}}
-{{--                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>--}}
-{{--                                <input type="file"--}}
-{{--                                       name="image"--}}
-{{--                                       accept="image/*"--}}
-{{--                                       class="w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded" />--}}
-{{--                                <p class="text-xs text-gray-400 mt-2">PNG, JPG SVG and WEBP are Allowed.</p>--}}
-{{--                        </div>--}}
-
                         <div class="sm:col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>
-                            <input type="text" name="image" id="image" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product image" required="">
+                            <div class="flex items-center space-x-6">
+                                <div class="shrink-0">
+                                    <img class="h-16 w-16 object-contain rounded-full"  id="image-preview" src="https://t3.ftcdn.net/jpg/04/60/01/36/360_F_460013622_6xF8uN6ubMvLx0tAJECBHfKPoNOR5cRa.jpg" alt="Image Preview" />
+                                </div>
+                                <label class="block">
+                                    <span class="sr-only">Choose profile photo</span>
+                                    <input type="file" name="image" id="image" accept="image/*" onchange="previewImage();" class="block w-full text-sm text-slate-500
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                  "/>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">PNG, JPG SVG and WEBP are Allowed.</p>
                         </div>
+
                         <div class="sm:col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Title</label>
                             <input type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product name" required="">
@@ -64,3 +71,23 @@
     </div>
 
 @endsection
+<script>
+    function previewImage() {
+        var file = document.getElementById("image").files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            var imagePreview = document.getElementById("image-preview");
+            imagePreview.src = reader.result;
+            imagePreview.style.display = "block";
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            var imagePreview = document.getElementById("image-preview");
+            imagePreview.src = "";
+            imagePreview.style.display = "none";
+        }
+    }
+</script>
