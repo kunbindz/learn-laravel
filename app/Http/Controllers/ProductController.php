@@ -17,8 +17,6 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        Storage::delete('9UgLyIAGD8AJUYXPzAg5Pi850BX1aEssuzjzsZmz.jpg');
-        Storage::delete('uploads/9UgLyIAGD8AJUYXPzAg5Pi850BX1aEssuzjzsZmz.jpg');
         $query = $request->input('query');
         if ($query) {
             // Search the products table based on the query
