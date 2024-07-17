@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -19,6 +17,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        Storage::delete('9UgLyIAGD8AJUYXPzAg5Pi850BX1aEssuzjzsZmz.jpg');
+        Storage::delete('uploads/9UgLyIAGD8AJUYXPzAg5Pi850BX1aEssuzjzsZmz.jpg');
         $query = $request->input('query');
         if ($query) {
             // Search the products table based on the query
@@ -137,9 +137,12 @@ class ProductController extends Controller
 
             // Handle file upload
             if ($request->hasFile('image')) {
+                logger('ab');
                 // Delete the old image if it exists
                 if ($product->image) {
-                    Storage::delete('public/' . $product->image);
+                    logger('delete');
+                    logger('path = '.'storage/' . $product->image);
+                    Storage::delete($product->image);
                 }
                 $filePath = $request->file('image')->store('uploads', 'public');
                 $productData['image'] = $filePath;
