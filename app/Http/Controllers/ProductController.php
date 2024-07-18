@@ -78,11 +78,8 @@ class ProductController extends Controller
             // Redirect with a success message
             return redirect('/products')->with('success', 'Product created successfully');
         } catch (GuzzleException $e) {
-            return $e;
+            return redirect('/products')->with('fail', 'Something wrong');
         }
-
-
-
     }
 
     /**
@@ -105,6 +102,7 @@ class ProductController extends Controller
     public function edit($id): View
     {
         $product = Product::findOrFail($id);
+//        dd($product->image);
 
         return view('products.edit', compact('product'));
     }
@@ -135,11 +133,8 @@ class ProductController extends Controller
 
             // Handle file upload
             if ($request->hasFile('image')) {
-                logger('ab');
                 // Delete the old image if it exists
                 if ($product->image) {
-                    logger('delete');
-                    logger('path = '.'storage/' . $product->image);
                     Storage::delete($product->image);
                 }
                 $filePath = $request->file('image')->store('uploads', 'public');
@@ -153,10 +148,6 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('products.index')->with('fail', 'Something wrong');
         }
-
-
-
-
     }
 
     /**
@@ -172,7 +163,7 @@ class ProductController extends Controller
         if ($deleted) {
             return redirect('/products')->with('success', 'Product deleted successfully');
         } else {
-            return response()->json(['message' => 'Product not found'], 404);
+            return redirect('/products')->with('fail', 'Something wrong');
         }
 
 

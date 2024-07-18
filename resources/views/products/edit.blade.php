@@ -1,9 +1,7 @@
 @extends('layout')
 @section('content')
     @extends('header')
-
     <div class="mx-auto max-w-7xl p-6 lg:px-8">
-
         <section class="bg-white dark:bg-gray-900">
             <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
                 <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Edit product</h2>
@@ -15,11 +13,11 @@
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>
                             <div class="flex items-center space-x-6">
                                 <div class="shrink-0">
-                                    <img class="h-16 w-16 object-contain rounded-full"  id="image-preview" src="{{ $product->image ? Storage::url($product->image) : '#' }}" alt="Image Preview" />
+                                    <img class="h-16 w-16 object-contain rounded-full"  id="image-preview" src="{{ Str::startsWith($product->image, 'https') ? $product->image : Storage::url($product->image) }}" alt="Image Preview" />
                                 </div>
                                 <label class="block">
                                     <span class="sr-only">Choose profile photo</span>
-                                    <input type="file" name="image" id="image" accept="image/*" value="{{ $product->image ? Storage::url($product->image) : '' }}" onchange="previewImage();" class="block w-full text-sm text-slate-500
+                                    <input type="file" name="image" id="image" accept="image/*" src="{{ Str::startsWith($product->image, 'https') ? $product->image : Storage::url($product->image) }}" onchange="previewImage();" class="block w-full text-sm text-slate-500
                                     file:mr-4 file:py-2 file:px-4
                                     file:rounded-full file:border-0
                                     file:text-sm file:font-semibold
@@ -28,23 +26,29 @@
                                   "/>
                                 </label>
                             </div>
+                            <p class="text-xs text-gray-400 mt-2">PNG, JPG SVG and WEBP are Allowed.</p>
+                            <span class="text-red-600">@error('image') {{$message}} @enderror</span>
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Title</label>
                             <input type="text" name="title" value="{{ $product->title }}" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product name" required="">
+                            <span class="text-red-600">@error('title') {{$message}} @enderror</span>
                         </div>
                         <div class="sm:col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Type</label>
                             <input type="text" name="product_type" value="{{ $product->product_type }}" id="name"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product type" required="">
+                            <span class="text-red-600">@error('product_type') {{$message}} @enderror</span>
                         </div>
                         <div class="w-full">
                             <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Vendor</label>
                             <input type="text" name="vendor" value="{{ $product->vendor }}" id="vendor" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Vendor" required="">
+                            <span class="text-red-600">@error('vendor') {{$message}} @enderror</span>
                         </div>
                         <div class="w-full">
                             <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
                             <input type="number" name="price" value="{{ $product->price }}" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$299" required="">
+                            <span class="text-red-600">@error('price') {{$message}} @enderror</span>
                         </div>
                         <div>
                             <label for="tag" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tag</label>
